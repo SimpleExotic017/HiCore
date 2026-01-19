@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HiCore
 {
-    internal class Logger
+    public class Logger
     {
         public class logger() { }
 
@@ -19,7 +19,8 @@ namespace HiCore
             Console.Write($"{message}\n");
         }
 
-        public void Debug(string variable) {
+        public void Debug(string variable)
+        {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("[Debug] ");
@@ -27,28 +28,32 @@ namespace HiCore
             Console.Write($"{variable}\n");
         }
 
-        public void Trace(string message) {
+        public void Trace(string message)
+        {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.Write("[Trace] ");
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
-        public void Warning(string message) {
+        public void Warning(string message)
+        {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.Write("[Warning] ");
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
-        public void Error(string message) {
+        public void Error(string message)
+        {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.Write("[Error] ");
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
-        public void Succes(string message) {
+        public void Succes(string message)
+        {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[Succes] ");
@@ -56,4 +61,5 @@ namespace HiCore
             Console.Write($"{message}\n");
         }
     }
+}
 }
