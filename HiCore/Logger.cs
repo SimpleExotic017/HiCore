@@ -19,6 +19,14 @@ namespace HiCore
             Console.Write($"{message}\n");
         }
 
+        public void Debug(string variable) {
+            ConsoleColor originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("[Debug] ");
+            Console.ForegroundColor = originalColor;
+            Console.Write($"{variable}\n");
+        }
+
         public void Trace(string message) {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Magenta;
@@ -47,6 +55,5 @@ namespace HiCore
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
-
     }
 }
