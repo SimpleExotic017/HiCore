@@ -51,7 +51,7 @@ namespace HiCore
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
-        public void Succes(string message)
+        public void Succes(string message = "executed succesfully")
         {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Green;
