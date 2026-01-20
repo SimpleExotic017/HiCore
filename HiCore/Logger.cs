@@ -8,7 +8,6 @@ namespace HiCore
 {
     public class Logger
     {
-        public class logger() { }
 
         public void Info(string message)
         {
@@ -62,4 +61,4 @@ namespace HiCore
         }
     }
 }
-}
+
