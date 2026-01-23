@@ -38,11 +38,11 @@ namespace HiCore
             Print("Succes", message, ConsoleColor.Green);
         }
 
-        private void Print(string type, string message, ConsoleColor fgColor)
+        private void Print(string errorType, string message, ConsoleColor fgColor)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write($"[{type}] ");
+            Console.ForegroundColor = fgColor;
+            Console.Write($"[{errorType}] ");
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
