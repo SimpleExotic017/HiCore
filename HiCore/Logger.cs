@@ -8,57 +8,43 @@ namespace HiCore
 {
     public class Logger
     {
-
         public void Info(string message)
         {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("[info] ");
-            Console.ForegroundColor = originalColor;
-            Console.Write($"{message}\n");
+            Print("Info", message, ConsoleColor.Blue);
         }
 
         public void Debug(string variable)
         {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("[Debug] ");
-            Console.ForegroundColor = originalColor;
-            Console.Write($"{variable}\n");
+            Print("Debug", variable, ConsoleColor.Red);
         }
 
         public void Trace(string message)
         {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.Write("[Trace] ");
-            Console.ForegroundColor = originalColor;
-            Console.Write($"{message}\n");
+            Print("Trace", message, ConsoleColor.Magenta);
         }
+
         public void Warning(string message)
+        {
+            Print("Warning", message, ConsoleColor.DarkYellow);
+        }
+
+        public void Error(string message)
+        {
+            Print("Error", message, ConsoleColor.DarkRed);
+        }
+
+        public void Succes(string message = "executed succesfully")
+        {
+            Print("Succes", message, ConsoleColor.Green);
+        }
+
+        private void Print(string type, string message, ConsoleColor fgColor)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.Write("[Warning] ");
-            Console.ForegroundColor = originalColor;
-            Console.Write($"{message}\n");
-        }
-        public void Error(string message)
-        {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.Write("[Error] ");
-            Console.ForegroundColor = originalColor;
-            Console.Write($"{message}\n");
-        }
-        public void Succes(string message = "executed succesfully")
-        {
-            ConsoleColor originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("[Succes] ");
+            Console.Write($"[{type}] ");
             Console.ForegroundColor = originalColor;
             Console.Write($"{message}\n");
         }
     }
 }
-
