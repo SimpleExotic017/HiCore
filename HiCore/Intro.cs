@@ -13,7 +13,6 @@ namespace HiCore
         public ConsoleColor highLight = ConsoleColor.Blue;
         private string introWidth =
             "*****************************************************************";
-
         public void PrintManual(string className, string[,] MethodsAndDescription)
         {
             ConsoleColor defaultColor = Console.ForegroundColor;
@@ -27,18 +26,21 @@ namespace HiCore
                 @"|_| |_|_|\____\___/|_|  \___|",
             };
             Console.Write("\n");
-            for (int i = 0; i < logo.Length; i++)
-            {
-                Console.WriteLine($"\t\t\t{logo[i]}");
-            }
+            PrintLogo(logo);
             Console.WriteLine("\n\t\t\tWelcome to the HiCore Library");
             Console.WriteLine($"\n\t{introWidth}\n");
-            //one tab is 8 characters long
             Console.Write("\t\t\t\tClass: ");
             Console.ForegroundColor = highLight;
             Console.WriteLine($"{className}\n");
             PrintClassFunctionalities(MethodsAndDescription);
             Console.ForegroundColor = defaultColor;
+        }
+        private void PrintLogo(string[] logo)
+        {
+            for (int i = 0; i < logo.Length; i++)
+            {
+                Console.WriteLine($"\t\t\t{logo[i]}");
+            }
         }
 
         private void PrintClassFunctionalities(string[,] MethodsAndDescription)
