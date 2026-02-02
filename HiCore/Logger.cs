@@ -8,6 +8,20 @@ namespace HiCore
 {
     public class Logger
     {
+        public void Manual()
+        {
+            string[,] methodsAndDescription =
+            {
+                { "Info", "Logging function to display info in the console" },
+                { "Debug", "Debugging function to display debug variables in the console" },
+                { "Trace", "Tracing function to Trace variable Values and display them in the console" },
+                { "Warning", "Warning function to display Warnings in the console" },
+                { "Error", "Error function to display Errors in the console" },
+                { "Succes", "Succes function to display a succes message in the console after task completion" },
+            };
+            Intro intro = new Intro("Logger",methodsAndDescription);
+        }
+
         public void Info(string message)
         {
             Print("Info", message, ConsoleColor.Blue);
