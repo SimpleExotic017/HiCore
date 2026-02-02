@@ -14,7 +14,7 @@ namespace HiCore
         private string introWidth =
             "*****************************************************************";
 
-        public Intro(string className, string[,] MethodsAndDescription)
+        public void PrintManual(string className, string[,] MethodsAndDescription)
         {
             ConsoleColor defaultColor = Console.ForegroundColor;
             Console.ForegroundColor = foreGroundColor;

@@ -19,7 +19,8 @@ namespace HiCore
                 { "Error", "Error function to display Errors in the console" },
                 { "Succes", "Succes function to display a succes message in the console after task completion" },
             };
-            Intro intro = new Intro("Logger",methodsAndDescription);
+            Intro intro = new Intro();
+            intro.PrintManual("Logger", methodsAndDescription);
         }
 
         public void Info(string message)
