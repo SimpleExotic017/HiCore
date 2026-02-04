@@ -8,7 +8,7 @@ namespace HiCore
 {
     public class Logger
     {
-        public void Manual()
+        public void Man()
         {
             string[,] methodsAndDescription =
             {
@@ -19,8 +19,8 @@ namespace HiCore
                 { "Error", "Error function to display Errors in the console" },
                 { "Succes", "Succes function to display a succes message in the console after task completion" },
             };
-            Intro intro = new Intro();
-            intro.PrintManual("Logger", methodsAndDescription);
+            Manual manual = new Manual();
+            manual.PrintManual("Logger", methodsAndDescription);
         }
 
         public void Info(string message)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HiCore
 {
-    internal class Intro
+    internal class Manual
     {
         public ConsoleColor foreGroundColor = ConsoleColor.Yellow;
         public ConsoleColor methodsColor = ConsoleColor.DarkBlue;
@@ -48,7 +48,7 @@ namespace HiCore
             for (int i = 0; i < MethodsAndDescription.GetLength(0); i++)
             {
                 Console.ForegroundColor = methodsColor;
-                Console.Write($"\t{MethodsAndDescription[i, 0].PadRight(10)}");
+                Console.Write($"\t{MethodsAndDescription[i, 0].PadRight(12)}");
                 Console.ForegroundColor = foreGroundColor;
                 Console.Write($"| ");
                 string[] description = MethodsAndDescription[i, 1].Split(" ");
@@ -68,7 +68,7 @@ namespace HiCore
                     }
                     else
                     {
-                        Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 20));
+                        Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 22));
                         descriptionLine = description[index] + " ";
                     }
                 }
@@ -79,7 +79,7 @@ namespace HiCore
                 }
                 else
                 {
-                    Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 20));
+                    Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 22));
                 }
                 Console.Write($"\n");
             }

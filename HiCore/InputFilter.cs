@@ -8,7 +8,16 @@ namespace HiCore
 {
     public class InputFilter
     {
-        public int FilterTyposToInt(string input)
+        public void Man()
+        {
+            string[,] methodsAndDescription =
+            {
+                { "TyposToInt", "filters any typos regarding accidental shift-key releases on an azerty keyboard" },
+            };
+            Manual manual = new Manual();
+            manual.PrintManual("InputFilter", methodsAndDescription);
+        }
+        public int TyposToInt(string input)
         {
             input = input.Replace("&", "1");
             input = input.Replace("é", "2");
