@@ -16,6 +16,9 @@ namespace HiCore
                     "TyposToInt",
                     "filters any typos regarding accidental shift-key releases on an azerty keyboard",
                 },
+                { "QuestionToString", "" },
+                { "QuestionToInt", "" },
+                { "QuestionToLong", "" },
             };
             Manual manual = new Manual();
             manual.PrintManual("InputFilter", methodsAndDescription);

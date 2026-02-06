@@ -45,10 +45,12 @@ namespace HiCore
 
         private void PrintClassFunctionalities(string[,] MethodsAndDescription)
         {
+            int longestMethodNameLength = FindLongestMethodName(MethodsAndDescription);
+            
             for (int i = 0; i < MethodsAndDescription.GetLength(0); i++)
             {
                 Console.ForegroundColor = methodsColor;
-                Console.Write($"\t{MethodsAndDescription[i, 0].PadRight(12)}");
+                Console.Write($"\t{MethodsAndDescription[i, 0].PadRight(longestMethodNameLength + 1)}");
                 Console.ForegroundColor = foreGroundColor;
                 Console.Write($"| ");
                 string[] description = MethodsAndDescription[i, 1].Split(" ");
@@ -56,7 +58,7 @@ namespace HiCore
                 int counter = 1;
                 for (int index = 0; index < description.Length; index++)
                 {
-                    if ((descriptionLine.Length + description[index].Length) < 50)
+                    if ((descriptionLine.Length + description[index].Length) < introWidth.Length - (longestMethodNameLength+8))
                     {
                         descriptionLine += description[index] + " ";
                     }
@@ -68,7 +70,7 @@ namespace HiCore
                     }
                     else
                     {
-                        Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 22));
+                        Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 11 + longestMethodNameLength));
                         descriptionLine = description[index] + " ";
                     }
                 }
@@ -79,10 +81,24 @@ namespace HiCore
                 }
                 else
                 {
-                    Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 22));
+                    Console.WriteLine(descriptionLine.PadLeft(descriptionLine.Length + 11 + longestMethodNameLength));
                 }
                 Console.Write($"\n");
             }
+        }
+
+        private int FindLongestMethodName(string[,] methodNames)
+        {
+            int longestNameLength = 0;
+            for (int i = 0; i < methodNames.GetLength(0); i++)
+            {
+                if (methodNames[i,0].Length > longestNameLength)
+                {
+
+                    longestNameLength = methodNames[i,0].Length;
+                }
+            }
+            return longestNameLength;
         }
     }
 }
