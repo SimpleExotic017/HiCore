@@ -58,7 +58,7 @@ namespace HiCore
                 int counter = 1;
                 for (int index = 0; index < description.Length; index++)
                 {
-                    if ((descriptionLine.Length + description[index].Length) < introWidth.Length - (longestMethodNameLength+8))
+                    if ((descriptionLine.Length + description[index].Length) < introWidth.Length - (longestMethodNameLength+2))
                     {
                         descriptionLine += description[index] + " ";
                     }
