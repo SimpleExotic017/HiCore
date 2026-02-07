@@ -89,30 +89,17 @@ namespace HiCore
             Console.Write($"{question} : ");
             string input = Console.ReadLine();
             int returnValue = 0;
-            if (input == "")
+            try
+            {
+                returnValue = Convert.ToInt32(input);
+            }
+            catch
             {
                 if (errorDisplay)
                 {
                     ErrorMessage(question);
                 }
                 returnValue = QuestionToInt(question, errorDisplay);
-            }
-            else
-            {
-                try
-                {
-                    returnValue = Convert.ToInt32(input);
-                }
-                catch (FormatException)
-                {
-                    if (errorDisplay)
-                    {
-                        ErrorMessage(question);
-                    }
-                    returnValue = QuestionToInt(question, errorDisplay);
-                    throw;
-                }
-
             }
             return returnValue;
         }
@@ -122,29 +109,17 @@ namespace HiCore
             Console.Write($"{question} : ");
             string input = Console.ReadLine();
             long returnValue = 0;
-            if (input == "")
+            try
+            {
+                returnValue = Convert.ToInt64(input);
+            }
+            catch
             {
                 if (errorDisplay)
                 {
                     ErrorMessage(question);
                 }
-                returnValue = QuestionToLong(question, errorDisplay);
-            }
-            else
-            {
-                try
-                {
-                    returnValue = Convert.ToInt64(input);
-                }
-                catch (FormatException)
-                {
-                    if (errorDisplay)
-                    {
-                        ErrorMessage(question);
-                    }
-                    returnValue = QuestionToLong(question, errorDisplay);
-                    throw;
-                }
+                returnValue = QuestionToInt(question, errorDisplay);
             }
             return returnValue;
         }
