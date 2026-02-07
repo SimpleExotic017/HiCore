@@ -6,7 +6,7 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            new InputFilter().QuestionToString("Do you have any questions for me?");
+            new InputFilter().QuestionToInt("Do you have any questions for me?");
         }
     }
 }

@@ -74,7 +74,7 @@ namespace HiCore
                 {
                     ErrorMessage(question);
                 }
-                returnValue = QuestionToString(question,errorDisplay);
+                returnValue = QuestionToString(question, errorDisplay);
             }
             else
             {
@@ -99,7 +99,20 @@ namespace HiCore
             }
             else
             {
-                returnValue = Convert.ToInt32(input);
+                try
+                {
+                    returnValue = Convert.ToInt32(input);
+                }
+                catch (FormatException)
+                {
+                    if (errorDisplay)
+                    {
+                        ErrorMessage(question);
+                    }
+                    returnValue = QuestionToInt(question, errorDisplay);
+                    throw;
+                }
+
             }
             return returnValue;
         }
@@ -119,7 +132,19 @@ namespace HiCore
             }
             else
             {
-                returnValue = Convert.ToInt64(input);
+                try
+                {
+                    returnValue = Convert.ToInt64(input);
+                }
+                catch (FormatException)
+                {
+                    if (errorDisplay)
+                    {
+                        ErrorMessage(question);
+                    }
+                    returnValue = QuestionToLong(question, errorDisplay);
+                    throw;
+                }
             }
             return returnValue;
         }
