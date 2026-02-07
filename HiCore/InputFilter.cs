@@ -78,6 +78,7 @@ namespace HiCore
             }
             else
             {
+                RemoveErrorMessage(question, input);
                 returnValue = input;
                 firstError = true;
             }
@@ -92,6 +93,7 @@ namespace HiCore
             try
             {
                 returnValue = Convert.ToInt32(input);
+                RemoveErrorMessage(question, input);
             }
             catch
             {
@@ -101,6 +103,7 @@ namespace HiCore
                 }
                 returnValue = QuestionToInt(question, errorDisplay);
             }
+            firstError = true;
             return returnValue;
         }
 
@@ -112,6 +115,9 @@ namespace HiCore
             try
             {
                 returnValue = Convert.ToInt64(input);
+
+                RemoveErrorMessage(question, input);
+
             }
             catch
             {
@@ -121,6 +127,7 @@ namespace HiCore
                 }
                 returnValue = QuestionToInt(question, errorDisplay);
             }
+            firstError = true;
             return returnValue;
         }
 
@@ -135,6 +142,15 @@ namespace HiCore
                 Console.ForegroundColor = resetColor;
             }
             firstError = false;
+        }
+        private void RemoveErrorMessage(string question, string value)
+        {
+            ClearCurrentConsoleLine();
+            if (!firstError)
+            {
+                ClearCurrentConsoleLine();
+            }
+            Console.WriteLine($"{question} : {value}");
         }
     }
 }
