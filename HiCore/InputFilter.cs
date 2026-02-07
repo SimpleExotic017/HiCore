@@ -8,6 +8,7 @@ namespace HiCore
 {
     public class InputFilter
     {
+        private bool firstError = true;
         public void Man()
         {
             string[,] methodsAndDescription =
@@ -16,15 +17,24 @@ namespace HiCore
                     "TyposToInt",
                     "filters any typos regarding accidental shift-key releases on an azerty keyboard",
                 },
-                { "QuestionToString", "return a 'string' from user input in the console, you can set a custom question" },
-                { "QuestionToInt", "return an 'int' from user input in the console, you can set a custom question" },
-                { "QuestionToLong", "return a 'long' from user input in the console, you can set a custom question" },
+                {
+                    "QuestionToString",
+                    "return a 'string' from user input in the console, you can set a custom question",
+                },
+                {
+                    "QuestionToInt",
+                    "return an 'int' from user input in the console, you can set a custom question",
+                },
+                {
+                    "QuestionToLong",
+                    "return a 'long' from user input in the console, you can set a custom question",
+                },
             };
             Manual manual = new Manual();
             manual.PrintManual("InputFilter", methodsAndDescription);
         }
 
-        public int TyposToInt(string input,bool inputNullSafety = false)
+        public int TyposToInt(string input, bool inputIsNullSafety = false)
         {
             input = input.Replace("&", "1");
             input = input.Replace("é", "2");
@@ -36,32 +46,95 @@ namespace HiCore
             input = input.Replace("!", "8");
             input = input.Replace("ç", "9");
             input = input.Replace("à", "0");
-            if (input == "" && inputNullSafety)
+            if (input == "" && inputIsNullSafety)
             {
                 input = "-1";
             }
             return Convert.ToInt32(input);
         }
 
-        public string QuestionToString(string question)
+
+        private static void ClearCurrentConsoleLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
+        }
+
+        public string QuestionToString(string question, bool errorDisplay = true)
         {
             Console.Write($"{question} : ");
             string input = Console.ReadLine();
-            return input;
+            string returnValue = "";
+            if (input == "")
+            {
+                if (errorDisplay)
+                {
+                    ErrorMessage(question);
+                }
+                returnValue = QuestionToString(question,errorDisplay);
+            }
+            else
+            {
+                returnValue = input;
+                firstError = true;
+            }
+            return returnValue;
         }
 
-        public int QuestionToInt(string question)
+        public int QuestionToInt(string question, bool errorDisplay = true)
         {
             Console.Write($"{question} : ");
-            int input = Convert.ToInt32(Console.ReadLine());
-            return input;
+            string input = Console.ReadLine();
+            int returnValue = 0;
+            if (input == "")
+            {
+                if (errorDisplay)
+                {
+                    ErrorMessage(question);
+                }
+                returnValue = QuestionToInt(question, errorDisplay);
+            }
+            else
+            {
+                returnValue = Convert.ToInt32(input);
+            }
+            return returnValue;
         }
 
-        public long QuestionToLong(string question)
+        public long QuestionToLong(string question, bool errorDisplay = true)
         {
             Console.Write($"{question} : ");
-            long input = Convert.ToInt64(Console.ReadLine());
-            return input;
+            string input = Console.ReadLine();
+            long returnValue = 0;
+            if (input == "")
+            {
+                if (errorDisplay)
+                {
+                    ErrorMessage(question);
+                }
+                returnValue = QuestionToLong(question, errorDisplay);
+            }
+            else
+            {
+                returnValue = Convert.ToInt64(input);
+            }
+            return returnValue;
+        }
+
+        private void ErrorMessage(string errorMessage = "")
+        {
+            ClearCurrentConsoleLine();
+            if (firstError == true)
+            {
+                ConsoleColor resetColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Input Invalid");
+                Console.ForegroundColor = resetColor;
+            }
+            firstError = false;
         }
     }
 }
