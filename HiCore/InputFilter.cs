@@ -24,7 +24,7 @@ namespace HiCore
             manual.PrintManual("InputFilter", methodsAndDescription);
         }
 
-        public int TyposToInt(string input)
+        public int TyposToInt(string input,bool inputNullSafety = false)
         {
             input = input.Replace("&", "1");
             input = input.Replace("é", "2");
@@ -36,7 +36,7 @@ namespace HiCore
             input = input.Replace("!", "8");
             input = input.Replace("ç", "9");
             input = input.Replace("à", "0");
-            if (input == "")
+            if (input == "" && inputNullSafety)
             {
                 input = "-1";
             }
