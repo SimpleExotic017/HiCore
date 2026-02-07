@@ -19,15 +19,15 @@ namespace HiCore
                 },
                 {
                     "QuestionToString",
-                    "return a 'string' from user input in the console, you can set a custom question",
+                    "return a 'string' from user input in the console, you can set a custom question. An Error message will be displayed if the user's input is empty",
                 },
                 {
                     "QuestionToInt",
-                    "return an 'int' from user input in the console, you can set a custom question",
+                    "return an 'int' from user input in the console, you can set a custom question. An Error message will be displayed if the user's input can not be converted to an int",
                 },
                 {
                     "QuestionToLong",
-                    "return a 'long' from user input in the console, you can set a custom question",
+                    "return a 'long' from user input in the console, you can set a custom question. An Error message will be displayed if the user's input can not be converted to a long",
                 },
             };
             Manual manual = new Manual();
