@@ -8,6 +8,19 @@ namespace HiCore
 {
     public class MethodPicker
     {
+        public void Man()
+        {
+            string[,] methodsAndDescription =
+            {
+                {
+                    "Menu",
+                    "Displays a welcome message to OOP, shows the user all the method names they can choose from in a neat menu and takes their input to invoke the selected Method (this is a QOL method for my experience at Artesis Plantijn)",
+                },
+            };
+            Manual manual = new Manual();
+            manual.PrintManual("Menu", methodsAndDescription);
+        }
+
         public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
         {
             Console.Clear();
@@ -78,7 +91,7 @@ namespace HiCore
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
-        private static void LoadScreen()
+        public static void LoadScreen()
         {
             int percentage = 0;
             string loading = "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒";
@@ -117,7 +130,10 @@ namespace HiCore
             Console.WriteLine($"{finished} 100%\n");
             Console.WriteLine("Press ENTER to continue");
             Console.ReadLine();
-            Console.Clear();
+            for (int i = 0; i < 5; i++)
+            {
+                ClearCurrentConsoleLine();
+            }
         }
     }
 }
