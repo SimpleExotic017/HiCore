@@ -22,37 +22,30 @@ namespace HiCore
             Manual manual = new Manual();
             manual.PrintManual("Logger", methodsAndDescription);
         }
-
         public void Info(string message)
         {
             Print("Info", message, ConsoleColor.Blue);
         }
-
         public void Debug(string variable)
         {
             Print("Debug", variable, ConsoleColor.Red);
         }
-
         public void Trace(string message)
         {
             Print("Trace", message, ConsoleColor.Magenta);
         }
-
         public void Warning(string message)
         {
             Print("Warning", message, ConsoleColor.DarkYellow);
         }
-
         public void Error(string message)
         {
             Print("Error", message, ConsoleColor.DarkRed);
         }
-
         public void Succes(string message = "executed succesfully")
         {
             Print("Succes", message, ConsoleColor.Green);
         }
-
         private void Print(string errorType, string message, ConsoleColor fgColor)
         {
             ConsoleColor originalColor = Console.ForegroundColor;
