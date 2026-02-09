@@ -9,6 +9,7 @@ namespace HiCore
     public class InputFilter
     {
         private bool firstError = true;
+
         public void Man()
         {
             string[,] methodsAndDescription =
@@ -28,7 +29,7 @@ namespace HiCore
                 {
                     "QuestionToLong",
                     "return a 'long' from user input in the console, you can set a custom question. An Error message will be displayed if the user's input can not be converted to a long",
-                },
+                },{"QuestionYN","returns true when the user enters \"Y\" and returns false when \"N\".The user can not enter any other value (except if lowercase)"}
             };
             Manual manual = new Manual();
             manual.PrintManual("InputFilter", methodsAndDescription);
@@ -52,7 +53,6 @@ namespace HiCore
             }
             return Convert.ToInt32(input);
         }
-
 
         private static void ClearCurrentConsoleLine()
         {
@@ -115,9 +115,7 @@ namespace HiCore
             try
             {
                 returnValue = Convert.ToInt64(input);
-
                 RemoveErrorMessage(question, input);
-
             }
             catch
             {
@@ -127,6 +125,35 @@ namespace HiCore
                 }
                 returnValue = QuestionToInt(question, errorDisplay);
             }
+            firstError = true;
+            return returnValue;
+        }
+
+        public bool QuestionYN(string question, bool errorDisplay = true)
+        {
+            Console.Write($"{question} [Y/N] : ");
+            string input = Console.ReadLine();
+            bool returnValue = false;
+
+            if (input.ToUpper() == "Y")
+            {
+                returnValue = true;
+                RemoveErrorMessage(question + " [Y/N]", "Yes");
+            }
+            else if (input.ToUpper() == "N")
+            {
+                returnValue = false;
+                RemoveErrorMessage(question + " [Y/N]", "No");
+            }
+            else
+            {
+                if (errorDisplay)
+                {
+                    ErrorMessage(question);
+                }
+                returnValue = QuestionYN(question, errorDisplay);
+            }
+
             firstError = true;
             return returnValue;
         }
@@ -143,6 +170,7 @@ namespace HiCore
             }
             firstError = false;
         }
+
         private void RemoveErrorMessage(string question, string value)
         {
             ClearCurrentConsoleLine();
