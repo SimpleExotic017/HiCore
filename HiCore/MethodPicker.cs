@@ -14,10 +14,10 @@ namespace HiCore
             {
                 {
                     "Menu",
-                    "Displays a welcome message to OOP, shows the user all the method" +
-                    " names they can choose from in a neat menu and takes their input to" +
-                    " invoke the selected Method (this is a QOL method for my experience" +
-                    " at Artesis Plantijn)",
+                    "Displays a welcome message to OOP, shows the user all the method"
+                        + " names they can choose from in a neat menu and takes their input to"
+                        + " invoke the selected Method (this is a QOL method for my experience"
+                        + " at Artesis Plantijn)",
                 },
             };
             Manual manual = new Manual();
@@ -26,7 +26,6 @@ namespace HiCore
 
         public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
         {
-
             Console.Clear();
             Console.WriteLine("\n\t\tWelcome to OOP");
             Console.WriteLine("\t\t**************");
@@ -96,36 +95,44 @@ namespace HiCore
 
         public static void LoadScreen()
         {
+            Console.CursorVisible = false;
             int percentage = 0;
             string loading = "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒";
             string finished = "████████████████████";
             Console.WriteLine($"Loading Excercise");
-            for (int i = 0; i < 21; i++)
+
+            Console.Write($"{loading} 0%");
+            Thread.Sleep(500);
+            for (int i = 0; i < 100; i++)
             {
-                Console.WriteLine(
-                    $"{finished.Substring(0, i) + loading.Substring(i, 20 - i)} {percentage}%"
-                );
-                Thread.Sleep(15 * (i + 1));
-                if (i == 20)
+                percentage++;
+                if (i == 99)
                 {
+                    percentage = 100;
                     Thread.Sleep(892);
                 }
-                ClearCurrentConsoleLine();
-                if (i % 7 == 0)
+                Console.SetCursorPosition(loading.Length, Console.CursorTop);
+                Console.Write($" {percentage}%");
+                if (i < 40)
                 {
-                    percentage += 7;
+                    Thread.Sleep(40);
                 }
-                else if (i % 3 == 0)
+                else if (i < 80)
                 {
-                    percentage += 4;
+                    Thread.Sleep(60);
                 }
-                else if (i == 19)
+                else if (i < 95)
                 {
-                    percentage += 4;
+                    Thread.Sleep(180);
                 }
                 else
                 {
-                    percentage += 5;
+                    Thread.Sleep(360);
+                }
+                if (i % 5 == 0)
+                {
+                    Console.SetCursorPosition(i / 5, Console.CursorTop);
+                    Console.Write("█");
                 }
             }
             ClearCurrentConsoleLine();
@@ -137,6 +144,7 @@ namespace HiCore
             {
                 ClearCurrentConsoleLine();
             }
+            Console.CursorVisible = true;
         }
     }
 }
