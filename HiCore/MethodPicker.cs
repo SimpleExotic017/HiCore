@@ -8,6 +8,8 @@ namespace HiCore
 {
     public class MethodPicker
     {
+        public static bool AllowLoadScreen = true;
+
         public void Man()
         {
             string[,] methodsAndDescription =
@@ -43,7 +45,12 @@ namespace HiCore
                 {
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
-                Console.WriteLine($"\tID {i + 1}: {methodNames[i]}\n");
+                Console.WriteLine($"\tID {(i + 1)}: {methodNames[i]}\n");
+            }
+            if (!MethodPicker.AllowLoadScreen)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.WriteLine("\tno load enabled");
             }
             if (!validOption)
             {
@@ -56,19 +63,37 @@ namespace HiCore
                 Console.Write("\tplease enter the methodID : ");
             }
             Console.ForegroundColor = ConsoleColor.Yellow;
-            string input = Console.ReadLine();
+            string input = Console.ReadLine();int choice = -1;
+            if (input == "no load")
+            {
+                MethodPicker.AllowLoadScreen = !MethodPicker.AllowLoadScreen;
+                choice = -10;
+            }
+            else
+            {
+                if (!input.Contains("-"))
+                {
+                    choice = new InputFilter().TyposToInt(input, true);
+                }
+            }
             Console.Clear();
             bool exit = false;
-            int choice = new InputFilter().TyposToInt(input, true);
             if (choice == 0)
             {
                 exit = true;
             }
             else if (choice > 0 && choice <= methods.Length)
             {
-                LoadScreen();
+                if (AllowLoadScreen)
+                {
+                    LoadScreen();
+                }
                 methods[choice - 1].Invoke();
-            }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\nPRESS ENTER TO RETURN");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ReadLine();
+            }else if(choice == -10) { }
             else
             {
                 exit = true;
@@ -76,10 +101,6 @@ namespace HiCore
             }
             if (!exit)
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\nPRESS ENTER TO RETURN");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.ReadLine();
                 Menu(methodNames, methods);
             }
         }
@@ -99,7 +120,7 @@ namespace HiCore
             int percentage = 0;
             string loading = "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒";
             string finished = "████████████████████";
-            Console.WriteLine($"Loading Excercise");
+            Console.WriteLine($"Loading Excercise\n");
 
             Console.Write($"{loading} 0%");
             Thread.Sleep(500);
@@ -136,11 +157,12 @@ namespace HiCore
                 }
             }
             ClearCurrentConsoleLine();
-            new Logger().Succes("Loading Complete");
+            ClearCurrentConsoleLine();
+            new Logger().Succes("Loading Complete\n");
             Console.WriteLine($"{finished} 100%\n");
             Console.WriteLine("Press ENTER to continue");
             Console.ReadLine();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 6; i++)
             {
                 ClearCurrentConsoleLine();
             }
