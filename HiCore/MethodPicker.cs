@@ -14,7 +14,10 @@ namespace HiCore
             {
                 {
                     "Menu",
-                    "Displays a welcome message to OOP, shows the user all the method names they can choose from in a neat menu and takes their input to invoke the selected Method (this is a QOL method for my experience at Artesis Plantijn)",
+                    "Displays a welcome message to OOP, shows the user all the method" +
+                    " names they can choose from in a neat menu and takes their input to" +
+                    " invoke the selected Method (this is a QOL method for my experience" +
+                    " at Artesis Plantijn)",
                 },
             };
             Manual manual = new Manual();
@@ -23,13 +26,13 @@ namespace HiCore
 
         public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
         {
+
             Console.Clear();
-            Console.WriteLine("\t\tWelcome to OOP");
+            Console.WriteLine("\n\t\tWelcome to OOP");
             Console.WriteLine("\t\t**************");
             Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("\t\tList of classes");
-            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("");
             for (int i = 0; i < methodNames.Length; i++)
             {
@@ -39,7 +42,7 @@ namespace HiCore
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 Console.WriteLine($"\tID {i + 1}: {methodNames[i]}\n");
             }
@@ -50,7 +53,7 @@ namespace HiCore
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.Write("\tplease enter the methodID : ");
             }
             Console.ForegroundColor = ConsoleColor.Yellow;
