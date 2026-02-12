@@ -29,7 +29,11 @@ namespace HiCore
                 {
                     "QuestionToLong",
                     "return a 'long' from user input in the console, you can set a custom question. An Error message will be displayed if the user's input can not be converted to a long",
-                },{"QuestionYN","returns true when the user enters \"Y\" and returns false when \"N\".The user can not enter any other value (except if lowercase)"}
+                },
+                {
+                    "QuestionYN",
+                    "returns true when the user enters \"Y\" and returns false when \"N\".The user can not enter any other value (except if lowercase)",
+                },
             };
             Manual manual = new Manual();
             manual.PrintManual("InputFilter", methodsAndDescription);
@@ -37,21 +41,31 @@ namespace HiCore
 
         public int TyposToInt(string input, bool inputIsNullSafety = false)
         {
-            input = input.Replace("&", "1");
-            input = input.Replace("é", "2");
-            input = input.Replace("\"", "3");
-            input = input.Replace("\'", "4");
-            input = input.Replace("(", "5");
-            input = input.Replace("§", "6");
-            input = input.Replace("è", "7");
-            input = input.Replace("!", "8");
-            input = input.Replace("ç", "9");
-            input = input.Replace("à", "0");
-            if (input == "" && inputIsNullSafety)
+            int returnValue;
+            try
             {
-                input = "-1";
+                input = input.Replace("&", "1");
+                input = input.Replace("é", "2");
+                input = input.Replace("\"", "3");
+                input = input.Replace("\'", "4");
+                input = input.Replace("(", "5");
+                input = input.Replace("§", "6");
+                input = input.Replace("è", "7");
+                input = input.Replace("!", "8");
+                input = input.Replace("ç", "9");
+                input = input.Replace("à", "0");
+                if (input == "" && inputIsNullSafety)
+                {
+                    input = "-1";
+                }
+                returnValue = Convert.ToInt32(input);
             }
-            return Convert.ToInt32(input);
+            catch (FormatException)
+            {
+                returnValue = -1;
+                throw;
+            }
+            return returnValue;
         }
 
         private static void ClearCurrentConsoleLine()
