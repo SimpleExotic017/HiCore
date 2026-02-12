@@ -10,6 +10,13 @@ namespace HiCore
     {
         public static bool AllowLoadScreen = true;
         public static bool AllowLetterByLetter = true;
+        public ConsoleColor mainColor = ConsoleColor.DarkCyan;
+        public ConsoleColor listColor = ConsoleColor.Gray;
+        public ConsoleColor unfinishedColor = ConsoleColor.Red;
+        public ConsoleColor errorColor = ConsoleColor.Red;
+        public ConsoleColor adminCommands = ConsoleColor.Magenta;
+        public ConsoleColor inputColor = ConsoleColor.Yellow;
+        public ConsoleColor returnColor = ConsoleColor.White;
 
         public void Man()
         {
@@ -30,30 +37,19 @@ namespace HiCore
         public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
         {
             Console.Clear();
-            ConsoleColor mainColor = ConsoleColor.DarkCyan;
-            ConsoleColor listColor = ConsoleColor.Gray;
-            ConsoleColor unfinishedColor = ConsoleColor.Red;
-            ConsoleColor errorColor = ConsoleColor.Red;
-            ConsoleColor adminCommands = ConsoleColor.Magenta;
-            ConsoleColor inputColor = ConsoleColor.Yellow;
-            ConsoleColor returnColor = ConsoleColor.White;
 
-            WelcomeMessage(mainColor);
-            PrintMethodList(methodNames, unfinishedColor, listColor);
+            Console.CursorVisible = false;
+            WelcomeMessage();
+            PrintMethodList(methodNames);
 
-            PrintAdminCommands(validOption, adminCommands, errorColor, mainColor);
-            int choice = checkInputForCommands(inputColor);
+            PrintAdminCommands(validOption);
+            Console.CursorVisible = true;
+            int choice = checkInputForCommands();
 
-            invokeMethodAndLoopBack(methodNames, methods, choice, returnColor, inputColor);
+            invokeMethodAndLoopBack(methodNames, methods, choice);
         }
 
-        private void invokeMethodAndLoopBack(
-            string[] methodNames,
-            Action[] methods,
-            int choice,
-            ConsoleColor returnColor,
-            ConsoleColor inputColor
-        )
+        private void invokeMethodAndLoopBack(string[] methodNames, Action[] methods, int choice)
         {
             bool exit = false;
             if (choice == 0)
@@ -148,7 +144,7 @@ namespace HiCore
             Console.CursorVisible = true;
         }
 
-        private void WelcomeMessage(ConsoleColor mainColor)
+        private void WelcomeMessage()
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n\t\tWelcome to OOP");
@@ -159,11 +155,7 @@ namespace HiCore
             Console.WriteLine("");
         }
 
-        private void PrintMethodList(
-            string[] methodNames,
-            ConsoleColor unfinishedColor,
-            ConsoleColor listColor
-        )
+        private void PrintMethodList(string[] methodNames)
         {
             for (int i = 0; i < methodNames.Length; i++)
             {
@@ -175,35 +167,51 @@ namespace HiCore
                 {
                     Console.ForegroundColor = listColor;
                 }
-                Console.WriteLine($"\tID {(i + 1)}: {methodNames[i]}\n");
+                PrintLetterByLetter($"\tID {(i + 1)}: {methodNames[i]}\n");
             }
         }
 
-        private void PrintAdminCommands(
-            bool validOption,
-            ConsoleColor adminCommands,
-            ConsoleColor errorColor,
-            ConsoleColor mainColor
-        )
+        private void PrintAdminCommands(bool inputIsValid)
         {
-            if (!MethodPicker.AllowLoadScreen)
+            List<string> orderOfCommands = new List<string>();
+            int commandCount = 0;
+            if (!AllowLoadScreen)
             {
-                Console.ForegroundColor = adminCommands;
-                Console.WriteLine("\tno load enabled");
+                orderOfCommands.Add("\tno load enabled");
+                commandCount++;
             }
-            if (!validOption)
+            if (inputIsValid)
             {
-                Console.ForegroundColor = errorColor;
-                Console.Write("\tplease enter a valid methodID : ");
+                orderOfCommands.Add("\tplease enter the methodID : ");
             }
             else
             {
-                Console.ForegroundColor = mainColor;
-                Console.Write("\tplease enter the methodID : ");
+                orderOfCommands.Add("\tplease enter a valid methodID : ");
+            }
+            foreach (string command in orderOfCommands)
+            {
+                if (commandCount > 0)
+                {
+                    commandCount--;
+                    Console.ForegroundColor = adminCommands;
+                    PrintLetterByLetter(command);
+                }
+                else
+                {
+                    if (!inputIsValid)
+                    {
+                        PrintLetterByLetter(command, false);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = mainColor;
+                        PrintLetterByLetter(command, false);
+                    }
+                }
             }
         }
 
-        private int checkInputForCommands(ConsoleColor inputColor)
+        private int checkInputForCommands()
         {
             Console.ForegroundColor = inputColor;
             string input = Console.ReadLine();
@@ -222,6 +230,26 @@ namespace HiCore
             }
             Console.Clear();
             return choice;
+        }
+
+        private void PrintLetterByLetter(string sentence, bool nextLine = true)
+        {
+            if (AllowLetterByLetter)
+            {
+                for (int i = 0; i < sentence.Length; i++)
+                {
+                    Console.Write($"{sentence}".Substring(i, 1));
+                    Thread.Sleep(30);
+                }
+            }
+            else
+            {
+                Console.Write($"{sentence}");
+            }
+            if (nextLine)
+            {
+                Console.Write("\n");
+            }
         }
     }
 }
