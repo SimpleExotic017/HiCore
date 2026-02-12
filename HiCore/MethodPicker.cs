@@ -9,6 +9,7 @@ namespace HiCore
     public class MethodPicker
     {
         public static bool AllowLoadScreen = true;
+        public static bool AllowLetterByLetter = true;
 
         public void Man()
         {
@@ -17,9 +18,9 @@ namespace HiCore
                 {
                     "Menu",
                     "Displays a welcome to OOP message, shows the user all the method"
-                     + " names they can choose from in a neat menu and takes their input to"
-                     + " invoke the selected Method (this is a QOL method for my experience"
-                     + " at Artesis Plantijn)",
+                        + " names they can choose from in a neat menu and takes their input to"
+                        + " invoke the selected Method (this is a QOL method for my experience"
+                        + " at Artesis Plantijn)",
                 },
             };
             Manual manual = new Manual();
@@ -29,54 +30,31 @@ namespace HiCore
         public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
         {
             Console.Clear();
-            Console.WriteLine("\n\t\tWelcome to OOP");
-            Console.WriteLine("\t\t**************");
-            Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\t\tList of classes");
-            Console.WriteLine("");
-            for (int i = 0; i < methodNames.Length; i++)
-            {
-                if (methodNames[i].Contains("(unfinished)"))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-                Console.WriteLine($"\tID {(i + 1)}: {methodNames[i]}\n");
-            }
-            if (!MethodPicker.AllowLoadScreen)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.WriteLine("\tno load enabled");
-            }
-            if (!validOption)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("\tplease enter a valid methodID : ");
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.Write("\tplease enter the methodID : ");
-            }
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            string input = Console.ReadLine();int choice = -1;
-            if (input == "no load")
-            {
-                MethodPicker.AllowLoadScreen = !MethodPicker.AllowLoadScreen;
-                choice = -10;
-            }
-            else
-            {
-                if (!input.Contains("-"))
-                {
-                    choice = new InputFilter().TyposToInt(input, true);
-                }
-            }
-            Console.Clear();
+            ConsoleColor mainColor = ConsoleColor.DarkCyan;
+            ConsoleColor listColor = ConsoleColor.Gray;
+            ConsoleColor unfinishedColor = ConsoleColor.Red;
+            ConsoleColor errorColor = ConsoleColor.Red;
+            ConsoleColor adminCommands = ConsoleColor.Magenta;
+            ConsoleColor inputColor = ConsoleColor.Yellow;
+            ConsoleColor returnColor = ConsoleColor.White;
+
+            WelcomeMessage(mainColor);
+            PrintMethodList(methodNames, unfinishedColor, listColor);
+
+            PrintAdminCommands(validOption, adminCommands, errorColor, mainColor);
+            int choice = checkInputForCommands(inputColor);
+
+            invokeMethodAndLoopBack(methodNames, methods, choice, returnColor, inputColor);
+        }
+
+        private void invokeMethodAndLoopBack(
+            string[] methodNames,
+            Action[] methods,
+            int choice,
+            ConsoleColor returnColor,
+            ConsoleColor inputColor
+        )
+        {
             bool exit = false;
             if (choice == 0)
             {
@@ -89,11 +67,12 @@ namespace HiCore
                     LoadScreen();
                 }
                 methods[choice - 1].Invoke();
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = returnColor;
                 Console.WriteLine("\nPRESS ENTER TO RETURN");
-                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor = inputColor;
                 Console.ReadLine();
-            }else if(choice == -10) { }
+            }
+            else if (choice == -10) { }
             else
             {
                 exit = true;
@@ -167,6 +146,82 @@ namespace HiCore
                 ClearCurrentConsoleLine();
             }
             Console.CursorVisible = true;
+        }
+
+        private void WelcomeMessage(ConsoleColor mainColor)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\n\t\tWelcome to OOP");
+            Console.WriteLine("\t\t**************");
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("\t\tList of classes");
+            Console.WriteLine("");
+        }
+
+        private void PrintMethodList(
+            string[] methodNames,
+            ConsoleColor unfinishedColor,
+            ConsoleColor listColor
+        )
+        {
+            for (int i = 0; i < methodNames.Length; i++)
+            {
+                if (methodNames[i].Contains("(unfinished)"))
+                {
+                    Console.ForegroundColor = unfinishedColor;
+                }
+                else
+                {
+                    Console.ForegroundColor = listColor;
+                }
+                Console.WriteLine($"\tID {(i + 1)}: {methodNames[i]}\n");
+            }
+        }
+
+        private void PrintAdminCommands(
+            bool validOption,
+            ConsoleColor adminCommands,
+            ConsoleColor errorColor,
+            ConsoleColor mainColor
+        )
+        {
+            if (!MethodPicker.AllowLoadScreen)
+            {
+                Console.ForegroundColor = adminCommands;
+                Console.WriteLine("\tno load enabled");
+            }
+            if (!validOption)
+            {
+                Console.ForegroundColor = errorColor;
+                Console.Write("\tplease enter a valid methodID : ");
+            }
+            else
+            {
+                Console.ForegroundColor = mainColor;
+                Console.Write("\tplease enter the methodID : ");
+            }
+        }
+
+        private int checkInputForCommands(ConsoleColor inputColor)
+        {
+            Console.ForegroundColor = inputColor;
+            string input = Console.ReadLine();
+            int choice = -1;
+            if (input == "no load")
+            {
+                MethodPicker.AllowLoadScreen = !MethodPicker.AllowLoadScreen;
+                choice = -10;
+            }
+            else
+            {
+                if (!input.Contains("-"))
+                {
+                    choice = new InputFilter().TyposToInt(input, true);
+                }
+            }
+            Console.Clear();
+            return choice;
         }
     }
 }
