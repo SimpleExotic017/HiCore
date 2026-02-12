@@ -16,10 +16,10 @@ namespace HiCore
             {
                 {
                     "Menu",
-                    "Displays a welcome message to OOP, shows the user all the method"
-                        + " names they can choose from in a neat menu and takes their input to"
-                        + " invoke the selected Method (this is a QOL method for my experience"
-                        + " at Artesis Plantijn)",
+                    "Displays a welcome to OOP message, shows the user all the method"
+                     + " names they can choose from in a neat menu and takes their input to"
+                     + " invoke the selected Method (this is a QOL method for my experience"
+                     + " at Artesis Plantijn)",
                 },
             };
             Manual manual = new Manual();
