@@ -9,7 +9,8 @@ namespace HiCore
     public class MethodPicker
     {
         public static bool AllowLoadScreen = true;
-        public static bool AllowLetterByLetter = true;
+        public static bool AllowLetterByLetter = false;
+        public ConsoleColor welcomeColor = ConsoleColor.White;
         public ConsoleColor mainColor = ConsoleColor.DarkCyan;
         public ConsoleColor listColor = ConsoleColor.Gray;
         public ConsoleColor unfinishedColor = ConsoleColor.Red;
@@ -34,7 +35,12 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-        public void Menu(string[] methodNames, Action[] methods, bool validOption = true)
+        public void Menu(
+            string[] methodNames,
+            Action[] methods,
+            bool validOption = true,
+            bool loadScreen = true
+        )
         {
             Console.Clear();
 
@@ -46,10 +52,15 @@ namespace HiCore
             Console.CursorVisible = true;
             int choice = checkInputForCommands();
 
-            invokeMethodAndLoopBack(methodNames, methods, choice);
+            invokeMethodAndLoopBack(methodNames, methods, choice, loadScreen);
         }
 
-        private void invokeMethodAndLoopBack(string[] methodNames, Action[] methods, int choice)
+        private void invokeMethodAndLoopBack(
+            string[] methodNames,
+            Action[] methods,
+            int choice,
+            bool loadScreen
+        )
         {
             bool exit = false;
             if (choice == 0)
@@ -58,25 +69,28 @@ namespace HiCore
             }
             else if (choice > 0 && choice <= methods.Length)
             {
-                if (AllowLoadScreen)
+                if (AllowLoadScreen && loadScreen)
                 {
                     LoadScreen();
                 }
                 methods[choice - 1].Invoke();
-                Console.ForegroundColor = returnColor;
-                Console.WriteLine("\nPRESS ENTER TO RETURN");
-                Console.ForegroundColor = inputColor;
-                Console.ReadLine();
+                if (loadScreen)
+                {
+                    Console.ForegroundColor = returnColor;
+                    Console.WriteLine("\nPRESS ENTER TO RETURN");
+                    Console.ForegroundColor = inputColor;
+                    Console.ReadLine();
+                }
             }
             else if (choice == -10) { }
             else
             {
                 exit = true;
-                Menu(methodNames, methods, false);
+                Menu(methodNames, methods, false, loadScreen);
             }
             if (!exit)
             {
-                Menu(methodNames, methods);
+                Menu(methodNames, methods, true, loadScreen);
             }
         }
 
@@ -146,11 +160,11 @@ namespace HiCore
 
         private void WelcomeMessage()
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = welcomeColor;
             Console.WriteLine("\n\t\tWelcome to OOP");
             Console.WriteLine("\t\t**************");
             Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = mainColor;
             Console.WriteLine("\t\tList of classes");
             Console.WriteLine("");
         }
@@ -205,6 +219,7 @@ namespace HiCore
                 {
                     if (!inputIsValid)
                     {
+                        Console.ForegroundColor = errorColor;
                         PrintLetterByLetter(command, false);
                     }
                     else
@@ -235,6 +250,16 @@ namespace HiCore
                     IronLung();
                     choice = -10;
                     break;
+                case "en -a":
+                    AllowLetterByLetter = false;
+                    AllowLoadScreen = false;
+                    choice = -10;
+                    break;
+                case "dis -a":
+                    AllowLetterByLetter = true;
+                    AllowLoadScreen = true;
+                    choice = -10;
+                    break;
                 default:
                     if (!input.Contains("-"))
                     {
@@ -248,6 +273,7 @@ namespace HiCore
 
         public static void IronLung()
         {
+            Console.Clear();
             int slowDown = 1;
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -263,7 +289,7 @@ namespace HiCore
             Console.CursorVisible = true;
         }
 
-        private void PrintLetterByLetter(string sentence, bool nextLine = true)
+        public void PrintLetterByLetter(string sentence, bool nextLine = true)
         {
             if (AllowLetterByLetter)
             {

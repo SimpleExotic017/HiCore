@@ -63,7 +63,6 @@ namespace HiCore
             catch (FormatException)
             {
                 returnValue = -1;
-                throw;
             }
             return returnValue;
         }
