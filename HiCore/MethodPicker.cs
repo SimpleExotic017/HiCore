@@ -18,6 +18,9 @@ namespace HiCore
         public ConsoleColor adminCommands = ConsoleColor.Magenta;
         public ConsoleColor inputColor = ConsoleColor.Yellow;
         public ConsoleColor returnColor = ConsoleColor.White;
+        private string[] methodNames;
+        private Action[] methods;
+        private int activeCommandsCount = 0;
 
         public void Man()
         {
@@ -42,32 +45,29 @@ namespace HiCore
             bool loadScreen = true
         )
         {
+            this.methodNames = methodNames;
+            this.methods = methods;
             Console.Clear();
 
             Console.CursorVisible = false;
             WelcomeMessage();
-            PrintMethodList(methodNames);
+            PrintMethodList();
 
             PrintAdminCommands(validOption);
             Console.CursorVisible = true;
             int choice = checkInputForCommands();
 
-            invokeMethodAndLoopBack(methodNames, methods, choice, loadScreen);
+            invokeMethodAndLoopBack(choice, loadScreen);
         }
 
-        private void invokeMethodAndLoopBack(
-            string[] methodNames,
-            Action[] methods,
-            int choice,
-            bool loadScreen
-        )
+        private void invokeMethodAndLoopBack(int choice, bool loadScreen)
         {
             bool exit = false;
             if (choice == 0)
             {
                 exit = true;
             }
-            else if (choice > 0 && choice <= methods.Length)
+            else if (IsValidMethodOption(choice))
             {
                 if (AllowLoadScreen && loadScreen)
                 {
@@ -92,6 +92,11 @@ namespace HiCore
             {
                 Menu(methodNames, methods, true, loadScreen);
             }
+        }
+
+        private bool IsValidMethodOption(int choice)
+        {
+            return choice > 0 && choice <= methods.Length;
         }
 
         private static void ClearCurrentConsoleLine()
@@ -169,7 +174,7 @@ namespace HiCore
             Console.WriteLine("");
         }
 
-        private void PrintMethodList(string[] methodNames)
+        private void PrintMethodList()
         {
             for (int i = 0; i < methodNames.Length; i++)
             {
@@ -207,6 +212,7 @@ namespace HiCore
             {
                 orderOfCommands.Add("\tplease enter a valid methodID : ");
             }
+            activeCommandsCount = commandCount;
             foreach (string command in orderOfCommands)
             {
                 if (commandCount > 0)
