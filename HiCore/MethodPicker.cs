@@ -20,7 +20,8 @@ namespace HiCore
         public ConsoleColor returnColor = ConsoleColor.White;
         private string[] methodNames;
         private Action[] methods;
-        private int activeCommandsCount = 0;
+        private int activeCommandsCount;
+        public bool isExercise = true;
 
         public void Man()
         {
@@ -38,65 +39,47 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-        public void Menu(
-            string[] methodNames,
-            Action[] methods,
-            bool validOption = true,
-            bool loadScreen = true
-        )
+        public void Menu(string[] methodNames, Action[] methods)
         {
             this.methodNames = methodNames;
             this.methods = methods;
-            Console.Clear();
 
             Console.CursorVisible = false;
+
             WelcomeMessage();
             PrintMethodList();
 
-            PrintAdminCommands(validOption);
             Console.CursorVisible = true;
-            int choice = checkInputForCommands();
 
-            invokeMethodAndLoopBack(choice, loadScreen);
+            invokeMethod();
         }
 
-        private void invokeMethodAndLoopBack(int choice, bool loadScreen)
+        private void invokeMethod()
         {
-            bool exit = false;
-            if (choice == 0)
+            int choice = -1;
+            while (choice != 0)
             {
-                exit = true;
-            }
-            else if (IsValidMethodOption(choice))
-            {
-                if (AllowLoadScreen && loadScreen)
+                choice = LoopUntilCorrect();
+                if (AllowLoadScreen && isExercise && choice != 0)
                 {
                     LoadScreen();
                 }
-                methods[choice - 1].Invoke();
-                if (loadScreen)
+                if (choice > 0 && choice <= methods.Length)
                 {
-                    Console.ForegroundColor = returnColor;
-                    Console.WriteLine("\nPRESS ENTER TO RETURN");
-                    Console.ForegroundColor = inputColor;
-                    Console.ReadLine();
+                    methods[choice - 1].Invoke();
+                    if (isExercise)
+                    {
+                        Console.ForegroundColor = returnColor;
+                        Console.WriteLine("\nPRESS ENTER TO RETURN");
+                        Console.ForegroundColor = inputColor;
+                        Console.ReadLine();
+                        Console.Clear();
+                        WelcomeMessage();
+                        PrintMethodList();
+                        PrintAdminCommands();
+                    }
                 }
             }
-            else if (choice == -10) { }
-            else
-            {
-                exit = true;
-                Menu(methodNames, methods, false, loadScreen);
-            }
-            if (!exit)
-            {
-                Menu(methodNames, methods, true, loadScreen);
-            }
-        }
-
-        private bool IsValidMethodOption(int choice)
-        {
-            return choice > 0 && choice <= methods.Length;
         }
 
         private static void ClearCurrentConsoleLine()
@@ -188,9 +171,10 @@ namespace HiCore
                 }
                 PrintLetterByLetter($"\tID {(i + 1)}: {methodNames[i]}\n");
             }
+            Console.WriteLine("");
         }
 
-        private void PrintAdminCommands(bool inputIsValid)
+        private void PrintAdminCommands(bool inputIsValid = true)
         {
             List<string> orderOfCommands = new List<string>();
             int commandCount = 0;
@@ -273,7 +257,6 @@ namespace HiCore
                     }
                     break;
             }
-            Console.Clear();
             return choice;
         }
 
@@ -313,6 +296,26 @@ namespace HiCore
             {
                 Console.Write("\n");
             }
+        }
+
+        private int LoopUntilCorrect()
+        {
+            int choice = -1;
+            bool firstRotation = true;
+            while (choice < 0 || choice > methods.Length)
+            {
+                for (int i = 0; i < activeCommandsCount; i++)
+                {
+                    ClearCurrentConsoleLine();
+                }
+                ClearCurrentConsoleLine();
+                Console.CursorVisible = false;
+                PrintAdminCommands(firstRotation);
+                Console.CursorVisible = true;
+                choice = checkInputForCommands();
+                firstRotation = false;
+            }
+            return choice;
         }
     }
 }
