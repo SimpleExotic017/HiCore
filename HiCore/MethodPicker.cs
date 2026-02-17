@@ -269,7 +269,15 @@ namespace HiCore
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             string text =
-                "This is not an expedition. It is an execution. When they put you in here, they don’t want you to return. And even if you do, and even if they keep their promises… what freedom waits for you? A few dying ships in a sea of dead stars?\r\n\r\nIf there is still hope, it lies beyond the veil. Hope in this void is as illusionary as the starlight. I will choose to breathe my last at the bottom of an ocean, unseen, unheard, and uncontrolled.\r\n\r\nThey will get their execution.\r\n\r\nI will get my freedom.";
+                "This is not an expedition. It is an execution. " +
+                "When they put you in here, they don’t want you to return." +
+                " And even if you do, and even if they keep their promises…" +
+                " what freedom waits for you? A few dying ships in a sea of " +
+                "dead stars?\r\n\r\nIf there is still hope, it lies beyond the veil." +
+                " Hope in this void is as illusionary as the starlight. I will " +
+                "choose to breathe my last at the bottom of an ocean, unseen, unheard," +
+                " and uncontrolled.\r\n\r\nThey will get their execution.\r\n\r\nI" +
+                " will get my freedom.";
             for (int i = 0; i < text.Length; i++)
             {
                 Console.Write(text.Substring(i, 1));
