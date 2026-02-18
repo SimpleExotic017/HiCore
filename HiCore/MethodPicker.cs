@@ -59,9 +59,9 @@ namespace HiCore
             int choice = -1;
             while (choice != 0)
             {
-                choice = LoopUntilCorrect();
-                if (AllowLoadScreen && isExercise && choice != 0)
+                if (AllowLoadScreen && isExercise && choice > 0)
                 {
+                    Console.Clear();
                     LoadScreen();
                 }
                 if (choice > 0 && choice <= methods.Length)
@@ -69,6 +69,7 @@ namespace HiCore
                     methods[choice - 1].Invoke();
                     if (isExercise)
                     {
+                        Console.Clear();
                         Console.ForegroundColor = returnColor;
                         Console.WriteLine("\nPRESS ENTER TO RETURN");
                         Console.ForegroundColor = inputColor;
@@ -79,6 +80,7 @@ namespace HiCore
                         PrintAdminCommands();
                     }
                 }
+                choice = LoopUntilCorrect();
             }
         }
 
