@@ -8,8 +8,6 @@ namespace HiCore
 {
     public class MethodPicker
     {
-        public static bool AllowLoadScreen = true;
-        public static bool AllowLetterByLetter = false;
         public ConsoleColor welcomeColor = ConsoleColor.White;
         public ConsoleColor mainColor = ConsoleColor.DarkCyan;
         public ConsoleColor listColor = ConsoleColor.Gray;
@@ -20,7 +18,7 @@ namespace HiCore
         public ConsoleColor returnColor = ConsoleColor.White;
         private string[] methodNames;
         private Action[] methods;
-        private int activeCommandsCount = 0;
+        private List<string> commands = new List<string>();
 
         public void Man()
         {
@@ -38,77 +36,47 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-        public void Menu(
-            string[] methodNames,
-            Action[] methods,
-            bool validOption = true,
-            bool loadScreen = true
-        )
+
+        public void Picker(string[] methodNames, Action[] methods)
         {
             this.methodNames = methodNames;
             this.methods = methods;
-            Console.Clear();
-
-            Console.CursorVisible = false;
-            WelcomeMessage();
-            PrintMethodList();
-
-            PrintAdminCommands(validOption);
-            Console.CursorVisible = true;
-            int choice = checkInputForCommands();
-
-            invokeMethodAndLoopBack(choice, loadScreen);
-        }
-
-        private void invokeMethodAndLoopBack(int choice, bool loadScreen)
-        {
             bool exit = false;
-            if (choice == 0)
+            do
             {
-                exit = true;
-            }
-            else if (IsValidMethodOption(choice))
-            {
-                if (AllowLoadScreen && loadScreen)
-                {
-                    LoadScreen();
-                }
-                methods[choice - 1].Invoke();
-                if (loadScreen)
-                {
-                    Console.ForegroundColor = returnColor;
-                    Console.WriteLine("\nPRESS ENTER TO RETURN");
-                    Console.ForegroundColor = inputColor;
-                    Console.ReadLine();
-                }
-            }
-            else if (choice == -10) { }
-            else
-            {
-                exit = true;
-                Menu(methodNames, methods, false, loadScreen);
-            }
-            if (!exit)
-            {
-                Menu(methodNames, methods, true, loadScreen);
-            }
+                WelcomeMessage();
+                PrintMethodList();
+                exit = HandleInput();
+            } while (!exit);
         }
-
-        private bool IsValidMethodOption(int choice)
+        private void WelcomeMessage()
         {
-            return choice > 0 && choice <= methods.Length;
+            Console.ForegroundColor = welcomeColor;
+            Console.WriteLine("\n\t\tWelcome to OOP");
+            Console.WriteLine("\t\t**************");
+            Console.WriteLine("");
+            Console.ForegroundColor = mainColor;
+            Console.WriteLine("\t\tList of classes");
+            Console.WriteLine("");
         }
 
-        private static void ClearCurrentConsoleLine()
+        private void PrintMethodList()
         {
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
+            for (int i = 0; i < methodNames.Length; i++)
+            {
+                if (methodNames[i].Contains("(unfinished)"))
+                {
+                    Console.ForegroundColor = unfinishedColor;
+                }
+                else
+                {
+                    Console.ForegroundColor = listColor;
+                }
+                HandlePrintingToConsole($"\tID {(i + 1)}: {methodNames[i]}\n");
+            }
         }
 
-        public static void LoadScreen()
+        private void HandleLoadScreen()
         {
             Console.CursorVisible = false;
             int percentage = 0;
@@ -163,121 +131,41 @@ namespace HiCore
             Console.CursorVisible = true;
         }
 
-        private void WelcomeMessage()
+        private bool HandleInput()
         {
-            Console.ForegroundColor = welcomeColor;
-            Console.WriteLine("\n\t\tWelcome to OOP");
-            Console.WriteLine("\t\t**************");
-            Console.WriteLine("");
-            Console.ForegroundColor = mainColor;
-            Console.WriteLine("\t\tList of classes");
-            Console.WriteLine("");
-        }
-
-        private void PrintMethodList()
-        {
-            for (int i = 0; i < methodNames.Length; i++)
-            {
-                if (methodNames[i].Contains("(unfinished)"))
-                {
-                    Console.ForegroundColor = unfinishedColor;
-                }
-                else
-                {
-                    Console.ForegroundColor = listColor;
-                }
-                PrintLetterByLetter($"\tID {(i + 1)}: {methodNames[i]}\n");
-            }
-        }
-
-        private void PrintAdminCommands(bool inputIsValid)
-        {
-            List<string> orderOfCommands = new List<string>();
-            int commandCount = 0;
-            if (!AllowLoadScreen)
-            {
-                orderOfCommands.Add("\tnoload enabled");
-                commandCount++;
-            }
-            if (!AllowLetterByLetter)
-            {
-                orderOfCommands.Add("\tprintnow enabled");
-                commandCount++;
-            }
-            if (inputIsValid)
-            {
-                orderOfCommands.Add("\tplease enter the methodID : ");
-            }
-            else
-            {
-                orderOfCommands.Add("\tplease enter a valid methodID : ");
-            }
-            activeCommandsCount = commandCount;
-            foreach (string command in orderOfCommands)
-            {
-                if (commandCount > 0)
-                {
-                    commandCount--;
-                    Console.ForegroundColor = adminCommands;
-                    PrintLetterByLetter(command);
-                }
-                else
-                {
-                    if (!inputIsValid)
-                    {
-                        Console.ForegroundColor = errorColor;
-                        PrintLetterByLetter(command, false);
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = mainColor;
-                        PrintLetterByLetter(command, false);
-                    }
-                }
-            }
-        }
-
-        public int checkInputForCommands()
-        {
-            Console.ForegroundColor = inputColor;
+            bool returnValue = true;
             string input = Console.ReadLine();
-            int choice = -1;
-            switch (input)
+            int inputValue = Convert.ToInt32(input);
+            if(inputValue != 0)
             {
-                case "noload":
-                    AllowLoadScreen = !AllowLoadScreen;
-                    choice = -10;
-                    break;
-                case "printnow":
-                    AllowLetterByLetter = !AllowLetterByLetter;
-                    choice = -10;
-                    break;
-                case "ironlung":
-                    IronLung();
-                    choice = -10;
-                    break;
-                case "en -a":
-                    AllowLetterByLetter = false;
-                    AllowLoadScreen = false;
-                    choice = -10;
-                    break;
-                case "dis -a":
-                    AllowLetterByLetter = true;
-                    AllowLoadScreen = true;
-                    choice = -10;
-                    break;
-                default:
-                    if (!input.Contains("-"))
-                    {
-                        choice = new InputFilter().TyposToInt(input, true);
-                    }
-                    break;
+                returnValue = false;
             }
-            Console.Clear();
-            return choice;
+            return returnValue;
         }
 
-        public static void IronLung()
+
+
+
+
+
+
+
+
+
+
+
+
+        private void ClearCurrentConsoleLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            int currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
+        }
+
+
+        private void IronLung()
         {
             Console.Clear();
             int slowDown = 1;
@@ -303,9 +191,9 @@ namespace HiCore
             Console.CursorVisible = true;
         }
 
-        public void PrintLetterByLetter(string sentence, bool nextLine = true)
+        private void HandlePrintingToConsole(string sentence, bool nextLine = true)
         {
-            if (AllowLetterByLetter)
+            if (!commands.Contains("printnow"))
             {
                 for (int i = 0; i < sentence.Length; i++)
                 {
@@ -322,5 +210,154 @@ namespace HiCore
                 Console.Write("\n");
             }
         }
+
+
+        //public void Menu(
+        //    string[] methodNames,
+        //    Action[] methods,
+        //    bool validOption = true,
+        //    bool loadScreen = true
+        //)
+        //{
+        //    this.methodNames = methodNames;
+        //    this.methods = methods;
+        //    Console.Clear();
+
+        //    Console.CursorVisible = false;
+        //    WelcomeMessage();
+        //    PrintMethodList();
+
+        //    PrintAdminCommands(validOption);
+        //    Console.CursorVisible = true;
+        //    int choice = checkInputForCommands();
+
+        //    invokeMethodAndLoopBack(choice, loadScreen);
+        //}
+
+        //private void invokeMethodAndLoopBack(int choice, bool loadScreen)
+        //{
+        //    bool exit = false;
+        //    if (choice == 0)
+        //    {
+        //        exit = true;
+        //    }
+        //    else if (IsValidMethodOption(choice))
+        //    {
+        //        if (AllowLoadScreen && loadScreen)
+        //        {
+        //            LoadScreen();
+        //        }
+        //        methods[choice - 1].Invoke();
+        //        if (loadScreen)
+        //        {
+        //            Console.ForegroundColor = returnColor;
+        //            Console.WriteLine("\nPRESS ENTER TO RETURN");
+        //            Console.ForegroundColor = inputColor;
+        //            Console.ReadLine();
+        //        }
+        //    }
+        //    else if (choice == -10) { }
+        //    else
+        //    {
+        //        exit = true;
+        //        Menu(methodNames, methods, false, loadScreen);
+        //    }
+        //    if (!exit)
+        //    {
+        //        Menu(methodNames, methods, true, loadScreen);
+        //    }
+        //}
+
+        //private bool IsValidMethodOption(int choice)
+        //{
+        //    return choice > 0 && choice <= methods.Length;
+        //}
+
+        //private void PrintAdminCommands(bool inputIsValid)
+        //{
+        //    List<string> orderOfCommands = new List<string>();
+        //    int commandCount = 0;
+        //    if (!AllowLoadScreen)
+        //    {
+        //        orderOfCommands.Add("\tnoload enabled");
+        //        commandCount++;
+        //    }
+        //    if (!AllowLetterByLetter)
+        //    {
+        //        orderOfCommands.Add("\tprintnow enabled");
+        //        commandCount++;
+        //    }
+        //    if (inputIsValid)
+        //    {
+        //        orderOfCommands.Add("\tplease enter the methodID : ");
+        //    }
+        //    else
+        //    {
+        //        orderOfCommands.Add("\tplease enter a valid methodID : ");
+        //    }
+        //    activeCommandsCount = commandCount;
+        //    foreach (string command in orderOfCommands)
+        //    {
+        //        if (commandCount > 0)
+        //        {
+        //            commandCount--;
+        //            Console.ForegroundColor = adminCommands;
+        //            PrintLetterByLetter(command);
+        //        }
+        //        else
+        //        {
+        //            if (!inputIsValid)
+        //            {
+        //                Console.ForegroundColor = errorColor;
+        //                PrintLetterByLetter(command, false);
+        //            }
+        //            else
+        //            {
+        //                Console.ForegroundColor = mainColor;
+        //                PrintLetterByLetter(command, false);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //public int checkInputForCommands()
+        //{
+        //    Console.ForegroundColor = inputColor;
+        //    string input = Console.ReadLine();
+        //    int choice = -1;
+        //    switch (input)
+        //    {
+        //        case "noload":
+        //            AllowLoadScreen = !AllowLoadScreen;
+        //            choice = -10;
+        //            break;
+        //        case "printnow":
+        //            AllowLetterByLetter = !AllowLetterByLetter;
+        //            choice = -10;
+        //            break;
+        //        case "ironlung":
+        //            IronLung();
+        //            choice = -10;
+        //            break;
+        //        case "en -a":
+        //            AllowLetterByLetter = false;
+        //            AllowLoadScreen = false;
+        //            choice = -10;
+        //            break;
+        //        case "dis -a":
+        //            AllowLetterByLetter = true;
+        //            AllowLoadScreen = true;
+        //            choice = -10;
+        //            break;
+        //        default:
+        //            if (!input.Contains("-"))
+        //            {
+        //                choice = new InputFilter().TyposToInt(input, true);
+        //            }
+        //            break;
+        //    }
+        //    Console.Clear();
+        //    return choice;
+        //}
     }
 }
