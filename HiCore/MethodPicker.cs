@@ -36,77 +36,47 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-        public void Menu(
-            string[] methodNames,
-            Action[] methods,
-            bool validOption = true,
-            bool loadScreen = true
-        )
+
+        public void Picker(string[] methodNames, Action[] methods)
         {
             this.methodNames = methodNames;
             this.methods = methods;
-            Console.Clear();
-
-            Console.CursorVisible = false;
-            WelcomeMessage();
-            PrintMethodList();
-
-            PrintAdminCommands(validOption);
-            Console.CursorVisible = true;
-            int choice = checkInputForCommands();
-
-            invokeMethodAndLoopBack(choice, loadScreen);
-        }
-
-        private void invokeMethodAndLoopBack(int choice, bool loadScreen)
-        {
             bool exit = false;
-            if (choice == 0)
+            do
             {
-                exit = true;
-            }
-            else if (IsValidMethodOption(choice))
-            {
-                if (AllowLoadScreen && loadScreen)
-                {
-                    LoadScreen();
-                }
-                methods[choice - 1].Invoke();
-                if (loadScreen)
-                {
-                    Console.ForegroundColor = returnColor;
-                    Console.WriteLine("\nPRESS ENTER TO RETURN");
-                    Console.ForegroundColor = inputColor;
-                    Console.ReadLine();
-                }
-            }
-            else if (choice == -10) { }
-            else
-            {
-                exit = true;
-                Menu(methodNames, methods, false, loadScreen);
-            }
-            if (!exit)
-            {
-                Menu(methodNames, methods, true, loadScreen);
-            }
+                WelcomeMessage();
+                PrintMethodList();
+                exit = HandleInput();
+            } while (!exit);
         }
-
-        private bool IsValidMethodOption(int choice)
+        private void WelcomeMessage()
         {
-            return choice > 0 && choice <= methods.Length;
+            Console.ForegroundColor = welcomeColor;
+            Console.WriteLine("\n\t\tWelcome to OOP");
+            Console.WriteLine("\t\t**************");
+            Console.WriteLine("");
+            Console.ForegroundColor = mainColor;
+            Console.WriteLine("\t\tList of classes");
+            Console.WriteLine("");
         }
 
-        private static void ClearCurrentConsoleLine()
+        private void PrintMethodList()
         {
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            int currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
+            for (int i = 0; i < methodNames.Length; i++)
+            {
+                if (methodNames[i].Contains("(unfinished)"))
+                {
+                    Console.ForegroundColor = unfinishedColor;
+                }
+                else
+                {
+                    Console.ForegroundColor = listColor;
+                }
+                HandlePrintingToConsole($"\tID {(i + 1)}: {methodNames[i]}\n");
+            }
         }
 
-        public static void LoadScreen()
+        private void HandleLoadScreen()
         {
             Console.CursorVisible = false;
             int percentage = 0;
@@ -163,32 +133,29 @@ namespace HiCore
 
         private bool HandleInput()
         {
-            Console.ForegroundColor = welcomeColor;
-            Console.WriteLine("\n\t\tWelcome to OOP");
-            Console.WriteLine("\t\t**************");
-            Console.WriteLine("");
-            Console.ForegroundColor = mainColor;
-            Console.WriteLine("\t\tList of classes");
-            Console.WriteLine("");
-        }
-
-        private void PrintMethodList()
-        {
-            for (int i = 0; i < methodNames.Length; i++)
+            bool returnValue = true;
+            string input = Console.ReadLine();
+            int inputValue = Convert.ToInt32(input);
+            if(inputValue != 0)
             {
-                if (methodNames[i].Contains("(unfinished)"))
-                {
-                    Console.ForegroundColor = unfinishedColor;
-                }
-                else
-                {
-                    Console.ForegroundColor = listColor;
-                }
-                PrintLetterByLetter($"\tID {(i + 1)}: {methodNames[i]}\n");
+                returnValue = false;
             }
+            return returnValue;
         }
 
-        private void PrintAdminCommands(bool inputIsValid)
+
+
+
+
+
+
+
+
+
+
+
+
+        private void ClearCurrentConsoleLine()
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             int currentLineCursor = Console.CursorTop;
@@ -197,45 +164,6 @@ namespace HiCore
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
-        public int checkInputForCommands()
-        {
-            Console.ForegroundColor = inputColor;
-            string input = Console.ReadLine();
-            int choice = -1;
-            switch (input)
-            {
-                case "noload":
-                    AllowLoadScreen = !AllowLoadScreen;
-                    choice = -10;
-                    break;
-                case "printnow":
-                    AllowLetterByLetter = !AllowLetterByLetter;
-                    choice = -10;
-                    break;
-                case "ironlung":
-                    IronLung();
-                    choice = -10;
-                    break;
-                case "en -a":
-                    AllowLetterByLetter = false;
-                    AllowLoadScreen = false;
-                    choice = -10;
-                    break;
-                case "dis -a":
-                    AllowLetterByLetter = true;
-                    AllowLoadScreen = true;
-                    choice = -10;
-                    break;
-                default:
-                    if (!input.Contains("-"))
-                    {
-                        choice = new InputFilter().TyposToInt(input, true);
-                    }
-                    break;
-            }
-            Console.Clear();
-            return choice;
-        }
 
         private void IronLung()
         {
@@ -281,26 +209,6 @@ namespace HiCore
             {
                 Console.Write("\n");
             }
-        }
-
-        private int LoopUntilCorrect()
-        {
-            int choice = -1;
-            bool firstRotation = true;
-            while (choice < 0 || choice > methods.Length)
-            {
-                for (int i = 0; i < activeCommandsCount; i++)
-                {
-                    ClearCurrentConsoleLine();
-                }
-                ClearCurrentConsoleLine();
-                Console.CursorVisible = false;
-                PrintAdminCommands(firstRotation);
-                Console.CursorVisible = true;
-                choice = checkInputForCommands();
-                firstRotation = false;
-            }
-            return choice;
         }
 
 
