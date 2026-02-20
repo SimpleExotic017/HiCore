@@ -18,7 +18,9 @@ namespace HiCore
         public ConsoleColor returnColor = ConsoleColor.White;
         private string[] methodNames;
         private Action[] methods;
-        private List<string> commands = new List<string>();
+        private bool allowLoadingScreen;
+        private List<string> activeCommands = new List<string>();
+        private List<string> commandsList = ["noload", "printnow"];
 
         public void Man()
         {
@@ -37,8 +39,9 @@ namespace HiCore
         }
 
 
-        public void Picker(string[] methodNames, Action[] methods)
+        public void Picker(string[] methodNames, Action[] methods, bool allowLoadingScreen = true)
         {
+            this.allowLoadingScreen = allowLoadingScreen;
             this.methodNames = methodNames;
             this.methods = methods;
             bool exit = false;
@@ -135,15 +138,30 @@ namespace HiCore
         {
             bool returnValue = true;
             string input = Console.ReadLine();
-            int inputValue = Convert.ToInt32(input);
-            if(inputValue != 0)
+            int inputValue = new InputFilter().TyposToInt(input, true);
+            if (inputValue != 0)
             {
                 returnValue = false;
+                if (inputValue > 0 && inputValue <= methods.Length)
+                {
+                    if (!activeCommands.Contains("noload") && allowLoadingScreen)
+                    {
+                        HandleLoadScreen();
+                    }
+                    methods[inputValue-1].Invoke();
+                }
+                else
+                {
+                    HandleInvalidInput();
+                }
             }
             return returnValue;
         }
 
+        private void HandleInvalidInput()
+        {
 
+        }
 
 
 
@@ -193,7 +211,7 @@ namespace HiCore
 
         private void HandlePrintingToConsole(string sentence, bool nextLine = true)
         {
-            if (!commands.Contains("printnow"))
+            if (!activeCommands.Contains("printnow"))
             {
                 for (int i = 0; i < sentence.Length; i++)
                 {
