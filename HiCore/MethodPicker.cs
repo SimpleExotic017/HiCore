@@ -38,15 +38,18 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-        private void temp()
+        public void EnableAllCommands()
         {
-            //activeCommands.Add("noload");
-            //activeCommands.Add("printnow");
+            activeCommands = commandsList;
+        }
+
+        public void DisableAllCommands()
+        {
+            activeCommands.Clear();
         }
 
         public void Picker(string[] methodNames, Action[] methods, bool isExecrisePicker = true)
         {
-            temp();
             this.isExecrisePicker = isExecrisePicker;
             this.methodNames = methodNames;
             this.methods = methods;
@@ -64,7 +67,8 @@ namespace HiCore
         private void WelcomeMessage()
         {
             Console.ForegroundColor = welcomeColor;
-            Console.WriteLine("\n\t\tWelcome to OOP");
+            Console.WriteLine("\n\t\t**************");
+            Console.WriteLine("\t\tWelcome to OOP");
             Console.WriteLine("\t\t**************");
             Console.WriteLine("");
             Console.ForegroundColor = mainColor;
@@ -212,7 +216,9 @@ namespace HiCore
             {
                 isCommand = true;
                 activeCommands.Add(input);
-            }else if(input == "ironlung"){
+            }
+            else if (input == "ironlung")
+            {
                 isCommand = true;
                 IronLung();
                 Console.Clear();
