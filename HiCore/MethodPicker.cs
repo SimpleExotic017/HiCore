@@ -86,7 +86,7 @@ namespace HiCore
                 }
                 HandlePrintingToConsole($"\tID {(i + 1)}: {methodNames[i]}\n");
             }
-            Console.WriteLine("");
+            //Console.WriteLine("");
         }
 
         private void HandleLoadScreen(int ExerciseId)
@@ -155,22 +155,11 @@ namespace HiCore
             bool returnValue = true;
             do
             {
-                ClearCurrentConsoleLine();
-                if (isValidId)
-                {
-                    Console.ForegroundColor = mainColor;
-                    HandlePrintingToConsole("\tEnter ID : ", false);
-                }
-                else
-                {
-                    Console.ForegroundColor = errorColor;
-                    HandlePrintingToConsole("\tEnter Valid ID : ",false);
-                }
+                PrintAdminCommands(isValidId);
                 isValidId = false;
                 Console.ForegroundColor = inputColor;
                 string input = Console.ReadLine();
                 inputValue = new InputFilter().TyposToInt(input, true);
-                //Console.Clear();
                 if (inputValue != 0)
                 {
                     returnValue = false;
@@ -187,9 +176,33 @@ namespace HiCore
             return returnValue;
         }
 
+        private void PrintAdminCommands(bool isValidId)
+        {
+            Console.ForegroundColor = adminCommandsColor;
+            foreach (string command in activeCommands)
+            {
+                Console.WriteLine($"\t{command}");
+            }
+            if (isValidId)
+            {
+                Console.ForegroundColor = mainColor;
+                HandlePrintingToConsole("\tEnter ID : ", false);
+            }
+            else
+            {
+                Console.ForegroundColor = errorColor;
+                HandlePrintingToConsole("\tEnter Valid ID : ", false);
+            }
+        }
+
         private bool HandleInvalidInput(string input)
         {
             bool isCommand = false;
+            ClearCurrentConsoleLine();
+            for (int i = 0; i < activeCommands.Count; i++)
+            {
+                ClearCurrentConsoleLine();
+            }
             if (activeCommands.Contains(input))
             {
                 isCommand = true;
@@ -217,11 +230,12 @@ namespace HiCore
                 {
                     HandleLoadScreen(inputValue - 1);
                 }
+
+                Console.Clear();
+                Console.ForegroundColor = mainColor;
+                Console.WriteLine($"\n{methodNames[inputValue - 1].ToUpper()}\n");
+                Console.ForegroundColor = inputColor;
             }
-            Console.Clear();
-            Console.ForegroundColor = mainColor;
-            Console.WriteLine($"\n{methodNames[inputValue - 1].ToUpper()}\n");
-            Console.ForegroundColor = inputColor;
             methods[inputValue - 1].Invoke();
             if (isExecrisePicker)
             {
