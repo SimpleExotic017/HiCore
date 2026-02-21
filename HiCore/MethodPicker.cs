@@ -13,14 +13,14 @@ namespace HiCore
         public ConsoleColor listColor = ConsoleColor.Gray;
         public ConsoleColor unfinishedColor = ConsoleColor.Red;
         public ConsoleColor errorColor = ConsoleColor.Red;
-        public ConsoleColor adminCommands = ConsoleColor.Magenta;
+        public ConsoleColor adminCommandsColor = ConsoleColor.Magenta;
         public ConsoleColor inputColor = ConsoleColor.Yellow;
         public ConsoleColor returnColor = ConsoleColor.White;
         private string[] methodNames;
         private Action[] methods;
-        private bool allowLoadingScreen;
-        private List<string> activeCommands = new List<string>();
-        private List<string> commandsList = ["noload", "printnow"];
+        private bool isExecrisePicker;
+        private static List<string> activeCommands = new List<string>();
+        private static List<string> commandsList = ["noload", "printnow"];
 
         public void Man()
         {
@@ -38,20 +38,29 @@ namespace HiCore
             manual.PrintManual("Menu", methodsAndDescription);
         }
 
-
-        public void Picker(string[] methodNames, Action[] methods, bool allowLoadingScreen = true)
+        private void temp()
         {
-            this.allowLoadingScreen = allowLoadingScreen;
+            //activeCommands.Add("noload");
+            //activeCommands.Add("printnow");
+        }
+
+        public void Picker(string[] methodNames, Action[] methods, bool isExecrisePicker = true)
+        {
+            temp();
+            this.isExecrisePicker = isExecrisePicker;
             this.methodNames = methodNames;
             this.methods = methods;
             bool exit = false;
             do
             {
+                Console.Clear();
                 WelcomeMessage();
                 PrintMethodList();
+
                 exit = HandleInput();
             } while (!exit);
         }
+
         private void WelcomeMessage()
         {
             Console.ForegroundColor = welcomeColor;
@@ -77,17 +86,21 @@ namespace HiCore
                 }
                 HandlePrintingToConsole($"\tID {(i + 1)}: {methodNames[i]}\n");
             }
+            Console.WriteLine("");
         }
 
-        private void HandleLoadScreen()
+        private void HandleLoadScreen(int ExerciseId)
         {
+            Console.Clear();
             Console.CursorVisible = false;
             int percentage = 0;
             string loading = "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒";
             string finished = "████████████████████";
-            Console.WriteLine($"Loading Excercise\n");
-
-            Console.Write($"{loading} 0%");
+            Console.Write($"\tLoading ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"{methodNames[ExerciseId]}\n\n");
+            Console.ForegroundColor = inputColor;
+            Console.Write($"\t{loading} 0%");
             Thread.Sleep(500);
             for (int i = 0; i < 100; i++)
             {
@@ -97,7 +110,7 @@ namespace HiCore
                     percentage = 100;
                     Thread.Sleep(892);
                 }
-                Console.SetCursorPosition(loading.Length, Console.CursorTop);
+                Console.SetCursorPosition(loading.Length + 8, Console.CursorTop);
                 Console.Write($" {percentage}%");
                 if (i < 40)
                 {
@@ -117,15 +130,16 @@ namespace HiCore
                 }
                 if (i % 5 == 0)
                 {
-                    Console.SetCursorPosition(i / 5, Console.CursorTop);
+                    Console.SetCursorPosition((i / 5) + 8, Console.CursorTop);
                     Console.Write("█");
                 }
             }
             ClearCurrentConsoleLine();
             ClearCurrentConsoleLine();
+            Console.Write("\t");
             new Logger().Succes("Loading Complete\n");
-            Console.WriteLine($"{finished} 100%\n");
-            Console.WriteLine("Press ENTER to continue");
+            Console.WriteLine($"\t{finished} 100%\n");
+            Console.WriteLine("\tPress ENTER to continue");
             Console.ReadLine();
             for (int i = 0; i < 6; i++)
             {
@@ -136,42 +150,92 @@ namespace HiCore
 
         private bool HandleInput()
         {
+            bool isValidId = true;
+            int inputValue;
             bool returnValue = true;
-            string input = Console.ReadLine();
-            int inputValue = new InputFilter().TyposToInt(input, true);
-            if (inputValue != 0)
+            do
             {
-                returnValue = false;
-                if (inputValue > 0 && inputValue <= methods.Length)
+                ClearCurrentConsoleLine();
+                if (isValidId)
                 {
-                    if (!activeCommands.Contains("noload") && allowLoadingScreen)
-                    {
-                        HandleLoadScreen();
-                    }
-                    methods[inputValue-1].Invoke();
+                    Console.ForegroundColor = mainColor;
+                    HandlePrintingToConsole("\tEnter ID : ", false);
                 }
                 else
                 {
-                    HandleInvalidInput();
+                    Console.ForegroundColor = errorColor;
+                    HandlePrintingToConsole("\tEnter Valid ID : ",false);
                 }
-            }
+                isValidId = false;
+                Console.ForegroundColor = inputColor;
+                string input = Console.ReadLine();
+                inputValue = new InputFilter().TyposToInt(input, true);
+                //Console.Clear();
+                if (inputValue != 0)
+                {
+                    returnValue = false;
+                    if (inputValue > 0 && inputValue <= methods.Length)
+                    {
+                        HandleInvocation(inputValue);
+                    }
+                    else
+                    {
+                        isValidId = HandleInvalidInput(input);
+                    }
+                }
+            } while (inputValue < 0 || inputValue > methods.Length);
             return returnValue;
         }
 
-        private void HandleInvalidInput()
+        private bool HandleInvalidInput(string input)
         {
-
+            bool isCommand = false;
+            if (activeCommands.Contains(input))
+            {
+                isCommand = true;
+                activeCommands.RemoveAt(activeCommands.IndexOf(input));
+            }
+            else if (commandsList.Contains(input))
+            {
+                isCommand = true;
+                activeCommands.Add(input);
+            }else if(input == "ironlung"){
+                isCommand = true;
+                IronLung();
+                Console.Clear();
+                WelcomeMessage();
+                PrintMethodList();
+            }
+            return isCommand;
         }
 
-
-
-
-
-
-
-
-
-
+        private void HandleInvocation(int inputValue)
+        {
+            if (isExecrisePicker)
+            {
+                if (!activeCommands.Contains("noload"))
+                {
+                    HandleLoadScreen(inputValue - 1);
+                }
+            }
+            Console.Clear();
+            Console.ForegroundColor = mainColor;
+            Console.WriteLine($"\n{methodNames[inputValue - 1].ToUpper()}\n");
+            Console.ForegroundColor = inputColor;
+            methods[inputValue - 1].Invoke();
+            if (isExecrisePicker)
+            {
+                Console.ForegroundColor = returnColor;
+                Console.Write("\n#####################");
+                Console.Write("\nPRESS ENTER TO RETURN");
+                Console.Write("\n#####################");
+                Console.CursorVisible = false;
+                Console.ReadLine();
+                Console.CursorVisible = true;
+                Console.ForegroundColor = inputColor;
+            }
+            Console.Clear();
+        }
 
         private void ClearCurrentConsoleLine()
         {
@@ -182,7 +246,6 @@ namespace HiCore
             Console.SetCursorPosition(0, currentLineCursor);
         }
 
-
         private void IronLung()
         {
             Console.Clear();
@@ -190,15 +253,15 @@ namespace HiCore
             Console.CursorVisible = false;
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             string text =
-                "This is not an expedition. It is an execution. " +
-                "When they put you in here, they don’t want you to return." +
-                " And even if you do, and even if they keep their promises…" +
-                " what freedom waits for you? A few dying ships in a sea of " +
-                "dead stars?\r\n\r\nIf there is still hope, it lies beyond the veil." +
-                " Hope in this void is as illusionary as the starlight. I will " +
-                "choose to breathe my last at the bottom of an ocean, unseen, unheard," +
-                " and uncontrolled.\r\n\r\nThey will get their execution.\r\n\r\nI" +
-                " will get my freedom.";
+                "This is not an expedition. It is an execution. "
+                + "When they put you in here, they don’t want you to return."
+                + " And even if you do, and even if they keep their promises…"
+                + " what freedom waits for you? A few dying ships in a sea of "
+                + "dead stars?\r\n\r\nIf there is still hope, it lies beyond the veil."
+                + " Hope in this void is as illusionary as the starlight. I will "
+                + "choose to breathe my last at the bottom of an ocean, unseen, unheard,"
+                + " and uncontrolled.\r\n\r\nThey will get their execution.\r\n\r\nI"
+                + " will get my freedom.";
             for (int i = 0; i < text.Length; i++)
             {
                 Console.Write(text.Substring(i, 1));
@@ -228,7 +291,6 @@ namespace HiCore
                 Console.Write("\n");
             }
         }
-
 
         //public void Menu(
         //    string[] methodNames,
