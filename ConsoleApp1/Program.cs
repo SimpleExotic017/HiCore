@@ -12,7 +12,9 @@ namespace ConsoleApp1
             logOut.Succes();
             string[] names = { "DO NOT PRESS THIS BUTTON" };
             Action[] methods = { () => logOut.Error("are you dumb?") };
-            new MethodPicker().Picker(names,methods);
+            MethodPicker menu = new MethodPicker();
+            menu.unfinishedColor = ConsoleColor.DarkBlue;
+            menu.Picker(names, methods);
         }
     }
 }
