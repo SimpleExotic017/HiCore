@@ -166,10 +166,10 @@ namespace HiCore
                 inputValue = new InputFilter().TyposToInt(input, true);
                 if (inputValue != 0)
                 {
-                    returnValue = false;
                     if (inputValue > 0 && inputValue <= methods.Length)
                     {
                         HandleInvocation(inputValue);
+                        returnValue = false;
                     }
                     else
                     {
