@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace HiCore
 {
+
+// you can use this method to display the features of a class
     internal class Manual
     {
         public ConsoleColor foreGroundColor = ConsoleColor.Yellow;
