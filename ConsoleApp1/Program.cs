@@ -15,6 +15,7 @@ namespace ConsoleApp1
             MethodPicker menu = new MethodPicker();
             menu.unfinishedColor = ConsoleColor.DarkBlue;
             menu.Picker(names, methods);
+string hehehe = "goodevening";
         }
     }
 }
